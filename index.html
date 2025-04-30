@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchShop - Premium Watches</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <section class="container">
+                <a class="navbar-brand" href="index.html">WatchShop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <section class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="user.html">My Account</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search watches" aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">Search</button>
+                    </form>
+                </section>
+            </section>
+        </nav>
+    </header>
+
+    <main class="container my-4">
+        <section class="row mb-4">
+            <article class="col-md-6 text-end">
+                <canvas id="logo-canvas" width="200" height="100" style="max-width: 100%; height: auto;"></canvas>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const canvas = document.getElementById('logo-canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Background rectangle
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.fillRect(0, 0, 200, 100);
+
+                        // Watch face
+                        ctx.beginPath();
+                        ctx.arc(100, 50, 40, 0, Math.PI * 2);
+                        ctx.fillStyle = '#f0f0f0';
+                        ctx.fill();
+                        ctx.strokeStyle = 'gold';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+
+                        // Hour hand
+                        ctx.beginPath();
+                        ctx.moveTo(100, 50);
+                        ctx.lineTo(100, 30);
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+
+                        // Minute hand
+                        ctx.beginPath();
+                        ctx.moveTo(100, 50);
+                        ctx.lineTo(120, 50);
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Text
+                        ctx.font = 'bold 20px Arial';
+                        ctx.fillStyle = 'red';
+                        ctx.fillText('WatchShop', 50, 90);
+                    });
+                </script>
+            </article>
+            <article class="col-md-6">
+                <h1>Welcome to WatchShop</h1>
+                <p>Discover our premium collection of watches for every occasion.</p>
+            </article>
+        </section>
+
+        <section class="watch-grid">
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+1" alt="Watch 1" class="watch-image">
+                <h3>Elegant Classic</h3>
+                <p>A timeless design with premium materials.</p>
+                <p class="price">$299.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+2" alt="Watch 2" class="watch-image">
+                <h3>Sport Pro</h3>
+                <p>Perfect for active lifestyles and sports enthusiasts.</p>
+                <p class="price">$249.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+3" alt="Watch 3" class="watch-image">
+                <h3>Minimalist</h3>
+                <p>Clean design with essential features.</p>
+                <p class="price">$199.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+4" alt="Watch 4" class="watch-image">
+                <h3>Luxury Gold</h3>
+                <p>Premium gold-plated watch for special occasions.</p>
+                <p class="price">$499.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+5" alt="Watch 5" class="watch-image">
+                <h3>Smart Watch</h3>
+                <p>Connect to your digital life with style.</p>
+                <p class="price">$349.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+6" alt="Watch 6" class="watch-image">
+                <h3>Diver Pro</h3>
+                <p>Water-resistant up to 200m for underwater adventures.</p>
+                <p class="price">$399.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+7" alt="Watch 7" class="watch-image">
+                <h3>Vintage Collection</h3>
+                <p>Classic design inspired by the 1960s.</p>
+                <p class="price">$279.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+8" alt="Watch 8" class="watch-image">
+                <h3>Chronograph</h3>
+                <p>Precision timing with multiple functions.</p>
+                <p class="price">$329.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+            <article class="watch-card">
+                <img src="https://via.placeholder.com/300x300?text=Watch+9" alt="Watch 9" class="watch-image">
+                <h3>Limited Edition</h3>
+                <p>Exclusive design with numbered certificate.</p>
+                <p class="price">$599.99</p>
+                <button class="btn btn-primary">Add to Cart</button>
+            </article>
+        </section>
+
+        <section class="my-5">
+            <h2>Upcoming Events</h2>
+            <iframe src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="100%" height="400" frameborder="0" scrolling="no"></iframe>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <section class="container">
+            <section class="row">
+                <article class="col-md-4">
+                    <h3>About WatchShop</h3>
+                    <p>Premium watch retailer offering the finest timepieces for all occasions.</p>
+                </article>
+                <article class="col-md-4">
+                    <h3>Useful Links</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.hodinkee.com" target="_blank" class="text-white">Hodinkee - Watch News</a></li>
+                        <li><a href="https://www.ablogtowatch.com" target="_blank" class="text-white">A Blog To Watch</a></li>
+                        <li><a href="https://www.watchtime.com" target="_blank" class="text-white">WatchTime Magazine</a></li>
+                    </ul>
+                </article>
+                <article class="col-md-4">
+                    <h3>Contact Us</h3>
+                    <address>
+                        Calle Sol<br>
+                        Sevilla, Andalucía, 41003<br>
+                        Email: info@watchshop.com<br>
+                        Phone: (+34) 567 332 214
+                    </address>
+                </article>
+            </section>
+            <section class="row mt-3">
+                <article class="col-12 text-center">
+                    <p>&copy; 2023 WatchShop. All rights reserved.</p>
+                </article>
+            </section>
+        </section>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

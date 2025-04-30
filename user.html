@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - WatchShop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <section class="container">
+                <a class="navbar-brand" href="index.html">WatchShop</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <section class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="user.html">My Account</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search watches" aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">Search</button>
+                    </form>
+                </section>
+            </section>
+        </nav>
+    </header>
+
+    <main class="container my-4">
+        <section class="row mb-4">
+            <article class="col-md-6">
+                <h1>My Account</h1>
+                <p>Manage your shopping cart and view your purchase history.</p>
+            </article>
+            <article class="col-md-6 text-end">
+                <canvas id="logo-canvas" width="200" height="100" style="max-width: 100%; height: auto;"></canvas>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const canvas = document.getElementById('logo-canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Background rectangle
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.fillRect(0, 0, 200, 100);
+
+                        // Watch face
+                        ctx.beginPath();
+                        ctx.arc(100, 50, 40, 0, Math.PI * 2);
+                        ctx.fillStyle = '#f0f0f0';
+                        ctx.fill();
+                        ctx.strokeStyle = 'gold';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+
+                        // Hour hand
+                        ctx.beginPath();
+                        ctx.moveTo(100, 50);
+                        ctx.lineTo(100, 30);
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
+
+                        // Minute hand
+                        ctx.beginPath();
+                        ctx.moveTo(100, 50);
+                        ctx.lineTo(120, 50);
+                        ctx.strokeStyle = '#333';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Text
+                        ctx.font = 'bold 20px Arial';
+                        ctx.fillStyle = 'red';
+                        ctx.fillText('WatchShop', 50, 90);
+                    });
+                </script>
+            </article>
+        </section>
+
+        <section class="user-section" id="login-section">
+            <h2>Login</h2>
+            <p>Please login to access your account. For demo purposes, use the credentials below:</p>
+            <p><strong>Email:</strong> user@example.com | <strong>Password:</strong> password123</p>
+
+            <form class="login-form" action="user.html#logged-in" method="get">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" value="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" value="password123" required>
+                </div>
+                <button type="submit" class="btn btn-login">Login</button>
+            </form>
+        </section>
+
+        <section class="user-dashboard" id="logged-in">
+            <div class="user-welcome">
+                <h2>Welcome, User!</h2>
+                <p>You are now logged in. Your session information is stored in the URL fragment.</p>
+                <a href="user.html" class="btn btn-outline-danger">Logout</a>
+            </div>
+
+            <section class="user-section" id="cart-section">
+                <h2>Shopping Cart</h2>
+                <p>Items in your cart:</p>
+
+                <article class="cart-item">
+                    <img src="https://via.placeholder.com/300x300?text=Watch+2" alt="Sport Pro Watch">
+                    <div class="cart-item-details">
+                        <h3>Sport Pro</h3>
+                        <p>Perfect for active lifestyles and sports enthusiasts.</p>
+                    </div>
+                    <div class="cart-item-price">$249.99</div>
+                </article>
+
+                <article class="cart-item">
+                    <img src="https://via.placeholder.com/300x300?text=Watch+5" alt="Smart Watch">
+                    <div class="cart-item-details">
+                        <h3>Smart Watch</h3>
+                        <p>Connect to your digital life with style.</p>
+                    </div>
+                    <div class="cart-item-price">$349.99</div>
+                </article>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <h3>Total: $599.98</h3>
+                    <button class="btn btn-primary">Checkout</button>
+                </div>
+            </section>
+
+            <section class="user-section" id="invoices-section">
+                <h2>Purchase History</h2>
+                <p>Your previous orders:</p>
+
+                <article class="invoice-item">
+                    <img src="https://via.placeholder.com/300x300?text=Watch+1" alt="Elegant Classic Watch">
+                    <div class="invoice-item-details">
+                        <h3>Invoice #1001</h3>
+                        <p>Date: 2023-05-15</p>
+                        <p>Item: Elegant Classic</p>
+                    </div>
+                    <div class="invoice-item-price">$299.99</div>
+                </article>
+
+                <article class="invoice-item">
+                    <img src="https://via.placeholder.com/300x300?text=Watch+3" alt="Minimalist Watch">
+                    <div class="invoice-item-details">
+                        <h3>Invoice #1002</h3>
+                        <p>Date: 2023-06-22</p>
+                        <p>Item: Minimalist</p>
+                    </div>
+                    <div class="invoice-item-price">$199.99</div>
+                </article>
+            </section>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <section class="container">
+            <section class="row">
+                <article class="col-md-4">
+                    <h3>About WatchShop</h3>
+                    <p>Premium watch retailer offering the finest timepieces for all occasions.</p>
+                </article>
+                <article class="col-md-4">
+                    <h3>Useful Links</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.hodinkee.com" target="_blank" class="text-white">Hodinkee - Watch News</a></li>
+                        <li><a href="https://www.ablogtowatch.com" target="_blank" class="text-white">A Blog To Watch</a></li>
+                        <li><a href="https://www.watchtime.com" target="_blank" class="text-white">WatchTime Magazine</a></li>
+                    </ul>
+                </article>
+                <article class="col-md-4">
+                    <h3>Contact Us</h3>
+                    <address>
+                        123 Watch Street<br>
+                        Timeville, TX 12345<br>
+                        Email: info@watchshop.com<br>
+                        Phone: (123) 456-7890
+                    </address>
+                </article>
+            </section>
+            <section class="row mt-3">
+                <article class="col-12 text-center">
+                    <p>&copy; 2023 WatchShop. All rights reserved.</p>
+                </article>
+            </section>
+        </section>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
