@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once 'database.php';
+
+// Initialize cart if it doesn't exist
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+// Handle add to cart action
+if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
+    $productId = $_POST['product_id'];
+
+    // If product already in cart, increment quantity
+    if (isset($_SESSION['cart'][$productId])) {
+        $_SESSION['cart'][$productId]++;
+    } else {
+        $_SESSION['cart'][$productId] = 1;
+    }
+
+    // Redirect to prevent form resubmission
+    header('Location: index.php');
+    exit;
+}
+
+// Get all products from database
+$products = getProducts();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,17 +39,17 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <section class="container">
-                <a class="navbar-brand" href="index.html">WatchShop</a>
+                <a class="navbar-brand" href="index.php">WatchShop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <section class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            <a class="nav-link active" aria-current="page" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="user.html">My Account</a>
+                            <a class="nav-link" href="user.php">My Account</a>
                         </li>
                     </ul>
                     <form class="d-flex">
@@ -85,69 +113,18 @@
         </section>
 
         <section class="watch-grid">
+            <?php foreach ($products as $product): ?>
             <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+1" alt="Watch 1" class="watch-image">
-                <h3>Elegant Classic</h3>
-                <p>A timeless design with premium materials.</p>
-                <p class="price">$299.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
+                <img src="<?php echo htmlspecialchars($product['image_location']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="watch-image">
+                <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                <p><?php echo htmlspecialchars($product['description']); ?></p>
+                <p class="price">$<?php echo number_format($product['price']); ?></p>
+                <form method="post" action="index.php">
+                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                    <button type="submit" name="add_to_cart" class="btn btn-primary">Add to Cart</button>
+                </form>
             </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+2" alt="Watch 2" class="watch-image">
-                <h3>Sport Pro</h3>
-                <p>Perfect for active lifestyles and sports enthusiasts.</p>
-                <p class="price">$249.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+3" alt="Watch 3" class="watch-image">
-                <h3>Minimalist</h3>
-                <p>Clean design with essential features.</p>
-                <p class="price">$199.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+4" alt="Watch 4" class="watch-image">
-                <h3>Luxury Gold</h3>
-                <p>Premium gold-plated watch for special occasions.</p>
-                <p class="price">$499.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+5" alt="Watch 5" class="watch-image">
-                <h3>Smart Watch</h3>
-                <p>Connect to your digital life with style.</p>
-                <p class="price">$349.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+6" alt="Watch 6" class="watch-image">
-                <h3>Diver Pro</h3>
-                <p>Water-resistant up to 200m for underwater adventures.</p>
-                <p class="price">$399.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+7" alt="Watch 7" class="watch-image">
-                <h3>Vintage Collection</h3>
-                <p>Classic design inspired by the 1960s.</p>
-                <p class="price">$279.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+8" alt="Watch 8" class="watch-image">
-                <h3>Chronograph</h3>
-                <p>Precision timing with multiple functions.</p>
-                <p class="price">$329.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
-            <article class="watch-card">
-                <img src="https://via.placeholder.com/300x300?text=Watch+9" alt="Watch 9" class="watch-image">
-                <h3>Limited Edition</h3>
-                <p>Exclusive design with numbered certificate.</p>
-                <p class="price">$599.99</p>
-                <button class="btn btn-primary">Add to Cart</button>
-            </article>
+            <?php endforeach; ?>
         </section>
 
         <section class="my-5">

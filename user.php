@@ -1,3 +1,81 @@
+<?php
+session_start();
+require_once 'database.php';
+
+// Initialize variables
+$loginError = '';
+$user = null;
+$purchaseHistory = [];
+$cartItems = [];
+$cartTotal = 0;
+
+// Check if user is logged in
+if (isset($_SESSION['user_id'])) {
+    $user = ['id' => $_SESSION['user_id'], 'name' => $_SESSION['user_name']];
+    $purchaseHistory = getPurchaseHistory($_SESSION['user_id']);
+
+    // Get cart items details
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $productId => $quantity) {
+            $product = getProductById($productId);
+            if ($product) {
+                $product['quantity'] = $quantity;
+                $cartItems[] = $product;
+                $cartTotal += ($product['price'] * $quantity);
+            }
+        }
+    }
+}
+
+// Handle login
+if (isset($_POST['login'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $user = authenticateUser($email, $password);
+
+    if ($user) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['name'];
+
+        // Get purchase history
+        $purchaseHistory = getPurchaseHistory($user['id']);
+
+        // Redirect to prevent form resubmission
+        header('Location: user.php');
+        exit;
+    } else {
+        $loginError = 'Invalid email or password';
+    }
+}
+
+// Handle logout
+if (isset($_GET['logout'])) {
+    // Clear user session data but keep cart
+    unset($_SESSION['user_id']);
+    unset($_SESSION['user_name']);
+
+    // Redirect to prevent resubmission
+    header('Location: user.php');
+    exit;
+}
+
+// Handle checkout
+if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION['cart'])) {
+    // Add purchase to database
+    addPurchase($_SESSION['user_id'], $_SESSION['cart']);
+
+    // Clear cart
+    $_SESSION['cart'] = [];
+
+    // Refresh purchase history
+    $purchaseHistory = getPurchaseHistory($_SESSION['user_id']);
+
+    // Redirect to prevent form resubmission
+    header('Location: user.php?checkout_success=1');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,17 +89,17 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <section class="container">
-                <a class="navbar-brand" href="index.html">WatchShop</a>
+                <a class="navbar-brand" href="index.php">WatchShop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <section class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
+                            <a class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="user.html">My Account</a>
+                            <a class="nav-link active" aria-current="page" href="user.php">My Account</a>
                         </li>
                     </ul>
                     <form class="d-flex">
@@ -84,84 +162,91 @@
             </article>
         </section>
 
+        <?php if (!$user): ?>
         <section class="user-section" id="login-section">
             <h2>Login</h2>
             <p>Please login to access your account. For demo purposes, use the credentials below:</p>
-            <p><strong>Email:</strong> user@example.com | <strong>Password:</strong> password123</p>
+            <p><strong>Email:</strong> pepe@mail.com | <strong>Password:</strong> pepe</p>
 
-            <form class="login-form" action="user.html#logged-in" method="get">
+            <?php if ($loginError): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($loginError); ?></div>
+            <?php endif; ?>
+
+            <form class="login-form" action="user.php" method="post">
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" value="user@example.com" required>
+                    <input type="email" class="form-control" id="email" name="email" value="pepe@mail.com" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" value="password123" required>
+                    <input type="password" class="form-control" id="password" name="password" value="pepe" required>
                 </div>
-                <button type="submit" class="btn btn-login">Login</button>
+                <button type="submit" name="login" class="btn btn-login">Login</button>
             </form>
         </section>
-
+        <?php else: ?>
         <section class="user-dashboard" id="logged-in">
             <div class="user-welcome">
-                <h2>Welcome, User!</h2>
-                <p>You are now logged in. Your session information is stored in the URL fragment.</p>
-                <a href="user.html" class="btn btn-outline-danger">Logout</a>
+                <h2>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</h2>
+                <p>You are now logged in. Manage your cart and view your purchase history below.</p>
+                <a href="user.php?logout=1" class="btn btn-outline-danger">Logout</a>
+                <a href="index.php" class="btn btn-outline-primary ms-2">Continue Shopping</a>
             </div>
 
             <section class="user-section" id="cart-section">
                 <h2>Shopping Cart</h2>
+                <?php if (isset($_GET['checkout_success'])): ?>
+                <div class="alert alert-success">Your order has been successfully processed!</div>
+                <?php endif; ?>
+
+                <?php if (empty($cartItems)): ?>
+                <p>Your cart is empty. <a href="index.php">Continue shopping</a> to add items to your cart.</p>
+                <?php else: ?>
                 <p>Items in your cart:</p>
 
+                <?php foreach ($cartItems as $item): ?>
                 <article class="cart-item">
-                    <img src="https://via.placeholder.com/300x300?text=Watch+2" alt="Sport Pro Watch">
+                    <img src="<?php echo htmlspecialchars($item['image_location']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
                     <div class="cart-item-details">
-                        <h3>Sport Pro</h3>
-                        <p>Perfect for active lifestyles and sports enthusiasts.</p>
+                        <h3><?php echo htmlspecialchars($item['name']); ?></h3>
+                        <p><?php echo htmlspecialchars($item['description']); ?></p>
+                        <p>Quantity: <?php echo $item['quantity']; ?></p>
                     </div>
-                    <div class="cart-item-price">$249.99</div>
+                    <div class="cart-item-price">$<?php echo number_format($item['price'] / 100, 2); ?></div>
                 </article>
-
-                <article class="cart-item">
-                    <img src="https://via.placeholder.com/300x300?text=Watch+5" alt="Smart Watch">
-                    <div class="cart-item-details">
-                        <h3>Smart Watch</h3>
-                        <p>Connect to your digital life with style.</p>
-                    </div>
-                    <div class="cart-item-price">$349.99</div>
-                </article>
+                <?php endforeach; ?>
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <h3>Total: $599.98</h3>
-                    <button class="btn btn-primary">Checkout</button>
+                    <h3>Total: $<?php echo number_format($cartTotal / 100, 2); ?></h3>
+                    <form method="post" action="user.php">
+                        <button type="submit" name="checkout" class="btn btn-primary">Checkout</button>
+                    </form>
                 </div>
+                <?php endif; ?>
             </section>
 
             <section class="user-section" id="invoices-section">
                 <h2>Purchase History</h2>
+                <?php if (empty($purchaseHistory)): ?>
+                <p>You haven't made any purchases yet.</p>
+                <?php else: ?>
                 <p>Your previous orders:</p>
 
+                <?php foreach ($purchaseHistory as $index => $purchase): ?>
                 <article class="invoice-item">
-                    <img src="https://via.placeholder.com/300x300?text=Watch+1" alt="Elegant Classic Watch">
+                    <img src="<?php echo htmlspecialchars($purchase['image_location']); ?>" alt="<?php echo htmlspecialchars($purchase['name']); ?>">
                     <div class="invoice-item-details">
-                        <h3>Invoice #1001</h3>
-                        <p>Date: 2023-05-15</p>
-                        <p>Item: Elegant Classic</p>
+                        <h3>Invoice #<?php echo $index + 1000; ?></h3>
+                        <p>Item: <?php echo htmlspecialchars($purchase['name']); ?></p>
+                        <p>Quantity: <?php echo $purchase['amount']; ?></p>
                     </div>
-                    <div class="invoice-item-price">$299.99</div>
+                    <div class="invoice-item-price">$<?php echo number_format($purchase['price'] / 100, 2); ?></div>
                 </article>
-
-                <article class="invoice-item">
-                    <img src="https://via.placeholder.com/300x300?text=Watch+3" alt="Minimalist Watch">
-                    <div class="invoice-item-details">
-                        <h3>Invoice #1002</h3>
-                        <p>Date: 2023-06-22</p>
-                        <p>Item: Minimalist</p>
-                    </div>
-                    <div class="invoice-item-price">$199.99</div>
-                </article>
+                <?php endforeach; ?>
+                <?php endif; ?>
             </section>
         </section>
+        <?php endif; ?>
     </main>
 
     <footer class="bg-dark text-white py-4">
