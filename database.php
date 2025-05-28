@@ -3,13 +3,12 @@
 $host = 'localhost';
 $dbname = 'watchshop';
 $username = 'root';
-$password = '';
 
 // Initialize database connection
 function connectDB() {
-    global $host, $dbname, $username, $password;
+    global $host, $dbname, $username;
     try {
-        $conn = new PDO("mysql:host=$host", $username, $password);
+        $conn = new PDO("mysql:host=$host", $username);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
         // Check if database exists, if not create it
