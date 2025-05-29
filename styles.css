@@ -118,15 +118,7 @@ address {
 }
 
 .user-dashboard {
-  display: none;
-}
-
-#logged-in:target {
   display: block;
-}
-
-#logged-in:target ~ #login-section {
-  display: none;
 }
 
 .user-welcome {

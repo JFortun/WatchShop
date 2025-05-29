@@ -22,7 +22,8 @@ function connectDB() {
 }
 
 // Initialize database tables and data
-function initializeDatabase() {
+function initializeDatabase(): void
+{
     $conn = connectDB();
     
     // Create tables if they don't exist
@@ -100,7 +101,8 @@ function initializeDatabase() {
 }
 
 // Get all products
-function getProducts() {
+function getProducts(): array
+{
     $conn = connectDB();
     $stmt = $conn->prepare("SELECT * FROM product");
     $stmt->execute();
@@ -127,7 +129,8 @@ function authenticateUser($email, $password) {
 }
 
 // Add purchase to database
-function addPurchase($clientId, $cart) {
+function addPurchase($clientId, $cart): void
+{
     $conn = connectDB();
     $stmt = $conn->prepare("INSERT INTO client_product (id_client, id_product, amount) VALUES (:clientId, :productId, :amount) ON DUPLICATE KEY UPDATE amount = amount + :amount");
     
@@ -140,7 +143,8 @@ function addPurchase($clientId, $cart) {
 }
 
 // Get purchase history for a client
-function getPurchaseHistory($clientId) {
+function getPurchaseHistory($clientId): array
+{
     $conn = connectDB();
     $stmt = $conn->prepare("
         SELECT cp.id_product, cp.amount, p.name, p.price, p.image_location, p.description 
@@ -155,4 +159,3 @@ function getPurchaseHistory($clientId) {
 
 // Initialize the database on script load
 initializeDatabase();
-?>

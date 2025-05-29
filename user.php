@@ -60,6 +60,20 @@ if (isset($_GET['logout'])) {
     exit;
 }
 
+// Handle remove from cart action
+if (isset($_POST['remove_from_cart']) && isset($_POST['remove_product_id'])) {
+    $productId = $_POST['remove_product_id'];
+
+    // Remove the product from the cart
+    if (isset($_SESSION['cart'][$productId])) {
+        unset($_SESSION['cart'][$productId]);
+    }
+
+    // Redirect to prevent form resubmission
+    header('Location: user.php');
+    exit;
+}
+
 // Handle checkout
 if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION['cart'])) {
     // Add purchase to database
@@ -102,10 +116,6 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
                             <a class="nav-link active" aria-current="page" href="user.php">My Account</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search watches" aria-label="Search">
-                        <button class="btn btn-outline-light" type="submit">Search</button>
-                    </form>
                 </section>
             </section>
         </nav>
@@ -211,6 +221,10 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
                         <h3><?php echo htmlspecialchars($item['name']); ?></h3>
                         <p><?php echo htmlspecialchars($item['description']); ?></p>
                         <p>Quantity: <?php echo $item['quantity']; ?></p>
+                        <form method="post" action="user.php">
+                            <input type="hidden" name="remove_product_id" value="<?php echo $item['id']; ?>">
+                            <button type="submit" name="remove_from_cart" class="btn btn-sm btn-danger">Remove</button>
+                        </form>
                     </div>
                     <div class="cart-item-price">$<?php echo number_format($item['price'] / 100, 2); ?></div>
                 </article>

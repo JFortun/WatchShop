@@ -23,6 +23,20 @@ if (isset($_POST['add_to_cart']) && isset($_POST['product_id'])) {
     exit;
 }
 
+// Handle remove from cart action
+if (isset($_POST['remove_from_cart']) && isset($_POST['remove_product_id'])) {
+    $productId = $_POST['remove_product_id'];
+
+    // Remove the product from the cart
+    if (isset($_SESSION['cart'][$productId])) {
+        unset($_SESSION['cart'][$productId]);
+    }
+
+    // Redirect to prevent form resubmission
+    header('Location: index.php');
+    exit;
+}
+
 // Get all products from database
 $products = getProducts();
 ?>
@@ -52,10 +66,6 @@ $products = getProducts();
                             <a class="nav-link" href="user.php">My Account</a>
                         </li>
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search watches" aria-label="Search">
-                        <button class="btn btn-outline-light" type="submit">Search</button>
-                    </form>
                 </section>
             </section>
         </nav>
@@ -112,19 +122,71 @@ $products = getProducts();
             </article>
         </section>
 
-        <section class="watch-grid">
-            <?php foreach ($products as $product): ?>
-            <article class="watch-card">
-                <img src="<?php echo htmlspecialchars($product['image_location']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="watch-image">
-                <h3><?php echo htmlspecialchars($product['name']); ?></h3>
-                <p><?php echo htmlspecialchars($product['description']); ?></p>
-                <p class="price">$<?php echo number_format($product['price']); ?></p>
-                <form method="post" action="index.php">
-                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                    <button type="submit" name="add_to_cart" class="btn btn-primary">Add to Cart</button>
-                </form>
+        <section class="row">
+            <article class="col-md-9">
+                <section class="watch-grid">
+                    <?php foreach ($products as $product): ?>
+                    <article class="watch-card">
+                        <img src="<?php echo htmlspecialchars($product['image_location']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="watch-image">
+                        <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                        <p><?php echo htmlspecialchars($product['description']); ?></p>
+                        <p class="price">$<?php echo number_format($product['price'] / 100, 2); ?></p>
+                        <form method="post" action="index.php">
+                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                            <button type="submit" name="add_to_cart" class="btn btn-primary">Add to Cart</button>
+                        </form>
+                    </article>
+                    <?php endforeach; ?>
+                </section>
             </article>
-            <?php endforeach; ?>
+
+            <aside class="col-md-3">
+                <section class="user-section" id="cart-panel">
+                    <h2>Shopping Cart</h2>
+                    <?php
+                    $cartItems = [];
+                    $cartTotal = 0;
+
+                    // Get cart items details
+                    if (!empty($_SESSION['cart'])) {
+                        foreach ($_SESSION['cart'] as $productId => $quantity) {
+                            $product = getProductById($productId);
+                            if ($product) {
+                                $product['quantity'] = $quantity;
+                                $cartItems[] = $product;
+                                $cartTotal += ($product['price'] * $quantity);
+                            }
+                        }
+                    }
+
+                    if (empty($cartItems)): 
+                    ?>
+                    <p>Your cart is empty.</p>
+                    <?php else: ?>
+                    <p>Items in your cart:</p>
+
+                    <?php foreach ($cartItems as $item): ?>
+                    <article class="cart-item">
+                        <img src="<?php echo htmlspecialchars($item['image_location']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
+                        <div class="cart-item-details">
+                            <h3><?php echo htmlspecialchars($item['name']); ?></h3>
+                            <p>Quantity: <?php echo $item['quantity']; ?></p>
+                            <form method="post" action="index.php">
+                                <input type="hidden" name="remove_product_id" value="<?php echo $item['id']; ?>">
+                                <button type="submit" name="remove_from_cart" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                        </div>
+                        <div class="cart-item-price">$<?php echo number_format($item['price'] / 100, 2); ?></div>
+                    </article>
+                    <?php endforeach; ?>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <h3>Total: $<?php echo number_format($cartTotal / 100, 2); ?></h3>
+                        <a href="user.php" class="btn btn-primary">Checkout</a>
+                    </div>
+                    <?php endif; ?>
+                </section>
+            </aside>
         </section>
 
         <section class="my-5">
