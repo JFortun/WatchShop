@@ -130,7 +130,7 @@ $products = getProducts();
                         <img src="<?php echo htmlspecialchars($product['image_location']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="watch-image">
                         <h3><?php echo htmlspecialchars($product['name']); ?></h3>
                         <p><?php echo htmlspecialchars($product['description']); ?></p>
-                        <p class="price">$<?php echo number_format($product['price'] / 100, 2); ?></p>
+                        <p class="price">$<?php echo number_format($product['price']); ?></p>
                         <form method="post" action="index.php">
                             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                             <button type="submit" name="add_to_cart" class="btn btn-primary">Add to Cart</button>
@@ -176,12 +176,12 @@ $products = getProducts();
                                 <button type="submit" name="remove_from_cart" class="btn btn-sm btn-danger">Remove</button>
                             </form>
                         </div>
-                        <div class="cart-item-price">$<?php echo number_format($item['price'] / 100, 2); ?></div>
+                        <div class="cart-item-price">$<?php echo number_format($item['price']); ?></div>
                     </article>
                     <?php endforeach; ?>
 
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <h3>Total: $<?php echo number_format($cartTotal / 100, 2); ?></h3>
+                        <h3>Total: $<?php echo number_format($cartTotal); ?></h3>
                         <a href="user.php" class="btn btn-primary">Checkout</a>
                     </div>
                     <?php endif; ?>

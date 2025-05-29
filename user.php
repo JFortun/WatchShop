@@ -226,12 +226,12 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
                             <button type="submit" name="remove_from_cart" class="btn btn-sm btn-danger">Remove</button>
                         </form>
                     </div>
-                    <div class="cart-item-price">$<?php echo number_format($item['price'] / 100, 2); ?></div>
+                    <div class="cart-item-price">$<?php echo number_format($item['price'] ); ?></div>
                 </article>
                 <?php endforeach; ?>
 
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <h3>Total: $<?php echo number_format($cartTotal / 100, 2); ?></h3>
+                    <h3>Total: $<?php echo number_format($cartTotal); ?></h3>
                     <form method="post" action="user.php">
                         <button type="submit" name="checkout" class="btn btn-primary">Checkout</button>
                     </form>
@@ -254,7 +254,7 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
                         <p>Item: <?php echo htmlspecialchars($purchase['name']); ?></p>
                         <p>Quantity: <?php echo $purchase['amount']; ?></p>
                     </div>
-                    <div class="invoice-item-price">$<?php echo number_format($purchase['price'] / 100, 2); ?></div>
+                    <div class="invoice-item-price">$<?php echo number_format($purchase['price']); ?></div>
                 </article>
                 <?php endforeach; ?>
                 <?php endif; ?>
