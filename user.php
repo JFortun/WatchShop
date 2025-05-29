@@ -89,6 +89,22 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
     header('Location: user.php?checkout_success=1');
     exit;
 }
+
+// Handle return product
+if (isset($_POST['return_product']) && isset($_POST['product_id']) && isset($_SESSION['user_id'])) {
+    $productId = $_POST['product_id'];
+    $clientId = $_SESSION['user_id'];
+
+    // Return the product
+    if (returnProduct($clientId, $productId)) {
+        // Refresh purchase history
+        $purchaseHistory = getPurchaseHistory($clientId);
+
+        // Redirect to prevent form resubmission
+        header('Location: user.php?return_success=1');
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -241,6 +257,10 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
 
             <section class="user-section" id="invoices-section">
                 <h2>Purchase History</h2>
+                <?php if (isset($_GET['return_success'])): ?>
+                <div class="alert alert-success">Your item has been successfully returned!</div>
+                <?php endif; ?>
+
                 <?php if (empty($purchaseHistory)): ?>
                 <p>You haven't made any purchases yet.</p>
                 <?php else: ?>
@@ -253,6 +273,10 @@ if (isset($_POST['checkout']) && isset($_SESSION['user_id']) && !empty($_SESSION
                         <h3>Invoice #<?php echo $index + 1000; ?></h3>
                         <p>Item: <?php echo htmlspecialchars($purchase['name']); ?></p>
                         <p>Quantity: <?php echo $purchase['amount']; ?></p>
+                        <form method="post" action="user.php">
+                            <input type="hidden" name="product_id" value="<?php echo $purchase['id_product']; ?>">
+                            <button type="submit" name="return_product" class="btn btn-sm btn-warning">Return</button>
+                        </form>
                     </div>
                     <div class="invoice-item-price">$<?php echo number_format($purchase['price']); ?></div>
                 </article>
